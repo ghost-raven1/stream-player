@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     calcVideoDuration (duration) {
-      this.videoDuration = Math.floor(duration / 60) + ':' + Math.ceil(duration) % 60
+      this.videoDuration = Math.floor(duration / 60) + ':' + Math.ceil(duration % 60)
     },
     videoRewind(e) {
       let w = this.position.offsetWidth
