@@ -35,7 +35,7 @@ export default {
     return {
       isPlaying: false,
       isError: false,
-      videoDuration: 0,
+      videoDuration: '0: 00',
       buffer: 0,
     }
   },
@@ -86,7 +86,9 @@ export default {
       hls.loadSource(stream);
       hls.attachMedia(video);
       hls.on(Hls.Events.ERROR, () => { this.isError = true })
-      hls.on(Hls.Events.LEVEL_LOADED, () => { this.calcVideoDuration(hls.media.duration) })
+      hls.on(Hls.Events.LEVEL_LOADED, () => {
+        if (this.isPlaying) this.calcVideoDuration(hls.media.duration)
+      })
     },
     play () {
       this.isPlaying = true
