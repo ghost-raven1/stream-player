@@ -23,13 +23,17 @@
 import Hls from 'hls.js';
 export default {
   name: "StreamPlayer",
+  props: {
+    link: {
+      type: String
+    }
+  },
   data () {
     return {
       isPlaying: false,
       videoDuration: 0,
       buffer: 0,
       progressValue: 0,
-      videoLink: 'https://live-streams.cdnvideo.ru/cdnvideo/caminandes/playlist.m3u8'
     }
   },
   computed: {
@@ -47,6 +51,9 @@ export default {
     },
   },
   watch: {
+    link () {
+      this.initPlayer()
+    },
     videoDuration () {
       let c = this.video.currentTime;
       let d = this.video.duration
@@ -54,16 +61,19 @@ export default {
     }
   },
   mounted() {
-    let hls = new Hls();
-    let stream = this.videoLink;
-    const video = this.video
-    hls.loadSource(stream);
-    hls.attachMedia(video);
-    hls.on(Hls.Events.LEVEL_LOADED, () => {
-      this.videoDuration = hls.media.duration
-    })
+    this.initPlayer ()
   },
   methods: {
+    initPlayer () {
+      let hls = new Hls();
+      let stream = this.link;
+      const video = this.video
+      hls.loadSource(stream);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.LEVEL_LOADED, () => {
+        this.videoDuration = hls.media.duration
+      })
+    },
     play () {
       this.isPlaying = true
       this.video.play()

@@ -1,6 +1,7 @@
 <template>
   <div class="home">
-    <StreamPlayer />
+    <StreamPlayer :link="link" />
+    <input v-model="link" />
   </div>
 </template>
 
@@ -10,6 +11,11 @@ import StreamPlayer from '@/components/Player.vue'
 export default {
   name: 'HomeView',
   components: {StreamPlayer},
+  data() {
+    return {
+      link: 'https://live-streams.cdnvideo.ru/cdnvideo/caminandes/playlist.m3u8'
+    }
+  }
 }
 </script>
 
@@ -17,6 +23,8 @@ export default {
 .home {
   width: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  gap: 10px
 }
 </style>
