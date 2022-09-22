@@ -4,9 +4,9 @@
     <div class="player-container">
       <div class="player__progress progress">
         <div class="progress__video-position-time">{{ Math.ceil(videoDuration) }} sec</div>
-        <progress class="progress__video-position" max="100" value="0" ref="position" />
+        <progress class="progress__video-position" max="100" value="0" ref="position" @click="(e) => videoRewind(e)" />
         <input type="range" ref="volume" min="0" max="100" :value="progressValue" class="player__volume"
-               @input="(v) => setVolume(v.target.value)" @click="(e) => videoRewind(e)">
+               @input="(v) => setVolume(v.target.value)">
       </div>
       <div class="player__buttons buttons">
         <button v-show="!isPlaying" @click="play" class="buttons__button">Play</button>
