@@ -4,7 +4,7 @@
     <div class="player-container">
       <div class="player__progress progress">
         <div class="progress__video-position-time">{{ Math.ceil(videoDuration) }} sec</div>
-        <progress class="progress__video-position" max="100" value="0" ref="position" @click="(e) => videoRewind(e)" />
+        <progress class="progress__video-position" max="100" value="0" ref="position" />
         <input type="range" ref="volume" min="0" max="100" :value="progressValue" class="player__volume"
                @input="(v) => setVolume(v.target.value)">
       </div>
@@ -84,13 +84,6 @@ export default {
     },
     setVolume (v) {
       this.video.volume = v / 100
-    },
-    videoRewind (e) {
-      let w = this.offsetWidth
-      let o = e.offsetX
-      this.progressValue = 100 * (o/w)
-      this.pause()
-      this.video.currentTime = this.video.duration * (o/w)
     }
   }
 }
