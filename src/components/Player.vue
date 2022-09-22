@@ -4,8 +4,8 @@
     <div v-show="!isError" class="player-container">
       <div class="player__progress progress">
         <div class="progress__video-position-time">{{ Math.ceil(videoDuration) }} sec</div>
-        <progress class="progress__video-position" max="100" value="0" ref="position" />
-        <input type="range" ref="volume" min="0" max="100" :value="progressValue" class="player__volume"
+        <progress class="progress__video-position" value="0" max="100" ref="position" @click="(e) => videoRewind(e)" />
+        <input type="range" ref="volume" min="0" max="100" value="100" class="player__volume"
                @input="(v) => setVolume(v.target.value)">
       </div>
       <div v-show="!isError" class="player__buttons buttons">
@@ -37,7 +37,6 @@ export default {
       isError: false,
       videoDuration: 0,
       buffer: 0,
-      progressValue: 0,
     }
   },
   computed: {
@@ -68,6 +67,14 @@ export default {
     this.initPlayer ()
   },
   methods: {
+    videoRewind(e) {
+      let w = this.position.offsetWidth
+      let o = e.offsetX
+      this.position.value = 100 * o/w
+      this.pause()
+      this.video.currentTime = this.video.duration * (o/w)
+      this.play()
+    },
     initPlayer () {
       this.isError = false
       let hls = new Hls();
