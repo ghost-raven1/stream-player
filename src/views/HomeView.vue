@@ -1,7 +1,10 @@
 <template>
   <div class="home">
-    <StreamPlayer :link="link" />
-    <input v-model="link" />
+    <div class="home__container container">
+      <StreamPlayer :link="link" class="container__player" />
+      <input v-model="currentLink" class="container__input" />
+      <button @click="link = currentLink">Change stream</button>
+    </div>
   </div>
 </template>
 
@@ -13,6 +16,7 @@ export default {
   components: {StreamPlayer},
   data() {
     return {
+      currentLink: 'https://live-streams.cdnvideo.ru/cdnvideo/caminandes/playlist.m3u8',
       link: 'https://live-streams.cdnvideo.ru/cdnvideo/caminandes/playlist.m3u8'
     }
   }
@@ -21,10 +25,21 @@ export default {
 
 <style lang="scss" scoped>
 .home {
+  display: flex;
   width: 100%;
+  justify-content: center;
+}
+.container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 10px
+  gap: 10px;
+  &__player {
+    max-width: 1300px;
+    width: 100%;
+  }
+  &__input {
+    max-width: 1300px;
+    width: 100%;
+  }
 }
 </style>

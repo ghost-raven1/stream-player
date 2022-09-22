@@ -1,20 +1,23 @@
 <template>
   <div class="player" ref="player">
-    <video class="player__video" ref="video" preload />
-    <div class="player-container">
+    <video v-show="!isError" class="player__video" ref="video" preload />
+    <div v-show="!isError" class="player-container">
       <div class="player__progress progress">
         <div class="progress__video-position-time">{{ Math.ceil(videoDuration) }} sec</div>
         <progress class="progress__video-position" max="100" value="0" ref="position" />
         <input type="range" ref="volume" min="0" max="100" :value="progressValue" class="player__volume"
                @input="(v) => setVolume(v.target.value)">
       </div>
-      <div class="player__buttons buttons">
+      <div v-show="!isError" class="player__buttons buttons">
         <button v-show="!isPlaying" @click="play" class="buttons__button">Play</button>
         <button v-show="isPlaying" @click="pause" class="buttons__button">Pause</button>
         <button @click="speedMinus" class="buttons__button">Speed-</button>
         <button @click="speedNormal" class="buttons__button">Normal</button>
         <button @click="speedPlus" class="buttons__button">Speed+</button>
       </div>
+    </div>
+    <div v-show="isError" class="player__video">
+      Error in stream link
     </div>
   </div>
 </template>
@@ -31,6 +34,7 @@ export default {
   data () {
     return {
       isPlaying: false,
+      isError: false,
       videoDuration: 0,
       buffer: 0,
       progressValue: 0,
@@ -65,14 +69,14 @@ export default {
   },
   methods: {
     initPlayer () {
+      this.isError = false
       let hls = new Hls();
       let stream = this.link;
       const video = this.video
       hls.loadSource(stream);
       hls.attachMedia(video);
-      hls.on(Hls.Events.LEVEL_LOADED, () => {
-        this.videoDuration = hls.media.duration
-      })
+      hls.on(Hls.Events.ERROR, () => { this.isError = true })
+      hls.on(Hls.Events.LEVEL_LOADED, () => { this.videoDuration = hls.media.duration })
     },
     play () {
       this.isPlaying = true
@@ -107,6 +111,7 @@ export default {
   justify-self: center;
   position: relative;
   &__video {
+    max-width: 1300px;
     width: 100%;
     min-width: 480px;
     border-radius: 13px;
