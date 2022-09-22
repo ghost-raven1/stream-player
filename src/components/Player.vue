@@ -3,7 +3,7 @@
     <video v-show="!isError" class="player__video" ref="video" preload />
     <div v-show="!isError" class="player-container">
       <div class="player__progress progress">
-        <div class="progress__video-position-time">{{ Math.ceil(videoDuration) }} sec</div>
+        <div class="progress__video-position-time">{{ videoDuration }}</div>
         <progress class="progress__video-position" value="0" max="100" ref="position" @click="(e) => videoRewind(e)" />
         <input type="range" ref="volume" min="0" max="100" value="100" class="player__volume"
                @input="(v) => setVolume(v.target.value)">
@@ -67,6 +67,9 @@ export default {
     this.initPlayer ()
   },
   methods: {
+    calcVideoDuration (duration) {
+      this.videoDuration = Math.floor(duration / 60) + ':' + Math.ceil(duration) % 60
+    },
     videoRewind(e) {
       let w = this.position.offsetWidth
       let o = e.offsetX
@@ -83,7 +86,7 @@ export default {
       hls.loadSource(stream);
       hls.attachMedia(video);
       hls.on(Hls.Events.ERROR, () => { this.isError = true })
-      hls.on(Hls.Events.LEVEL_LOADED, () => { this.videoDuration = hls.media.duration })
+      hls.on(Hls.Events.LEVEL_LOADED, () => { this.calcVideoDuration(hls.media.duration) })
     },
     play () {
       this.isPlaying = true
