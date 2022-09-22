@@ -88,7 +88,10 @@ export default {
       const video = this.video
       hls.loadSource(stream);
       hls.attachMedia(video);
-      hls.on(Hls.Events.ERROR, () => { this.isError = true })
+      hls.on(Hls.Events.ERROR, () => {
+        this.isError = true
+        this.initPlayer()
+      })
       hls.on(Hls.Events.LEVEL_LOADED, () => {
         this.calcVideoDuration(hls.levels[0].details.totalduration, 'videoDurationTotal')
         if (this.isPlaying) this.calcVideoDuration(hls.media.duration, 'videoDurationView')
