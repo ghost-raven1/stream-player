@@ -1,9 +1,9 @@
 <template>
   <div class="player" ref="player">
-    <video v-show="!isError" class="player__video" ref="video" preload />
+    <video v-show="!isError" class="player__video" ref="video" />
     <div v-show="!isError" class="player-container">
       <div class="player__progress progress">
-        <div class="progress__video-position-time">{{ videoDuration }}</div>
+        <div class="progress__video-position-time">{{ videoDurationView }} {{ videoDurationTotal }}</div>
         <progress class="progress__video-position" value="0" max="100" ref="position" @click="(e) => videoRewind(e)" />
         <input type="range" ref="volume" min="0" max="100" value="100" class="player__volume"
                @input="(v) => setVolume(v.target.value)">
@@ -35,7 +35,8 @@ export default {
     return {
       isPlaying: false,
       isError: false,
-      videoDuration: '0: 00',
+      videoDurationTotal: '0: 00',
+      videoDurationView: '0: 00',
       buffer: 0,
     }
   },
@@ -57,7 +58,7 @@ export default {
     link () {
       this.initPlayer()
     },
-    videoDuration () {
+    videoDurationView () {
       let c = this.video.currentTime;
       let d = this.video.duration
       this.position.value = (100 * c) / d
@@ -67,8 +68,8 @@ export default {
     this.initPlayer ()
   },
   methods: {
-    calcVideoDuration (duration) {
-      this.videoDuration = Math.floor(duration / 60) + ':' + Math.ceil(duration % 60)
+    calcVideoDuration (duration, type) {
+      this.$data[type] = Math.floor(duration / 60) + ':' + Math.ceil(duration % 60)
     },
     videoRewind(e) {
       let w = this.position.offsetWidth
@@ -80,14 +81,17 @@ export default {
     },
     initPlayer () {
       this.isError = false
-      let hls = new Hls();
+      let hls = new Hls({
+        enableWorker: true
+      });
       let stream = this.link;
       const video = this.video
       hls.loadSource(stream);
       hls.attachMedia(video);
       hls.on(Hls.Events.ERROR, () => { this.isError = true })
       hls.on(Hls.Events.LEVEL_LOADED, () => {
-        if (this.isPlaying) this.calcVideoDuration(hls.media.duration)
+        this.calcVideoDuration(hls.levels[0].details.totalduration, 'videoDurationTotal')
+        if (this.isPlaying) this.calcVideoDuration(hls.media.duration, 'videoDurationView')
       })
     },
     play () {
