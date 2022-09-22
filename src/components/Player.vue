@@ -94,7 +94,7 @@ export default {
       })
       hls.on(Hls.Events.LEVEL_LOADED, () => {
         this.calcVideoDuration(hls.levels[0].details.totalduration, 'videoDurationTotal')
-        if (this.isPlaying) this.calcVideoDuration(hls.media.duration, 'videoDurationView')
+        if (this.isPlaying) this.calcVideoDuration(this.video.duration, 'videoDurationView')
       })
     },
     play () {
