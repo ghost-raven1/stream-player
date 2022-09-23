@@ -1,7 +1,8 @@
 <template>
   <div class="player" ref="player">
-    <video v-show="!isError" class="player__video" ref="video" />
-    <div v-show="!isError" class="player-container">
+    <audio ref="audio" v-show="!isVideo" class="player__audio" controls :src="link" />
+    <video v-show="!isError && isVideo" class="player__video" ref="video" />
+    <div v-show="!isError && isVideo" class="player-container">
       <div class="player__progress progress">
         <div class="progress__video-position-time">{{ videoDurationView }} {{ videoDurationTotal }}</div>
         <progress class="progress__video-position" value="0" max="100" ref="position" @click="(e) => videoRewind(e)" />
@@ -27,6 +28,9 @@ import Hls from 'hls.js';
 export default {
   name: "StreamPlayer",
   props: {
+    isVideo: {
+      type: Boolean
+    },
     link: {
       type: String
     }
@@ -37,10 +41,12 @@ export default {
       isError: false,
       videoDurationTotal: '0: 00',
       videoDurationView: '0: 00',
-      buffer: 0,
     }
   },
   computed: {
+    audio () {
+      return this.$refs['audio']
+    },
     player () {
       return this.$refs['player']
     },
@@ -130,6 +136,12 @@ export default {
   justify-self: center;
   position: relative;
   &__video {
+    max-width: 1300px;
+    width: 100%;
+    min-width: 480px;
+    border-radius: 13px;
+  }
+  &__audio {
     max-width: 1300px;
     width: 100%;
     min-width: 480px;
